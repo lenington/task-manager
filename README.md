@@ -7,7 +7,7 @@ Aplicação full stack, focada em backend, em Spring Boot para gerenciamento de 
 - Criar, listar, editar e remover tarefas.
 - Filtrar tarefas por status e prioridade.
 - Validações no front-end e no back-end.
-- Persistência com JPA, Flyway e banco H2 em memória por padrão.
+- Persistência com JPA, Flyway e H2 (padrão, em memória) / MySQL
 - Logs mínimos para criação, busca, atualização e remoção.
 - Documentação automática da API com Swagger UI.
 - Testes unitários e de integração.
@@ -27,16 +27,19 @@ mvn spring-boot:run
 
 Acesse:
 
-- Front-end: `http://localhost:8081`
-- Swagger UI: `http://localhost:8081/swagger-ui/index.html`
-- H2 Console: `http://localhost:8081/h2-console`
+| Recurso | URL |
+|---------|-----|
+| Frontend | http://localhost:8081 |
+| Swagger UI | http://localhost:8081/swagger-ui/index.html |
+| H2 Console | http://localhost:8081/h2-console |
 
 Dados do H2 Console:
 
 - JDBC URL: `jdbc:h2:mem:taskmanager`
 - User: `sa`
-- Password: vazio
-
+- Password: *(vazio)*
+> O banco H2 em memória é criado automaticamente ao iniciar. Nenhuma configuração adicional é necessária.
+> 
 ## Executar com MySQL
 
 Crie ou disponibilize uma instância MySQL local e ajuste `src/main/resources/application-mysql.properties` se necessário.
@@ -59,9 +62,8 @@ mvn test
 
 Os testes cobrem:
 
-- Regras principais do `TaskService`.
-- Fluxo de API com criação, filtro, atualização, remoção e busca inexistente.
-- Validações obrigatórias do payload.
+- **Unitários** (`TaskServiceTest`): regras do service com repositório mockado — busca por id, criação e exceção para id inexistente.
+- **Integração** (`TaskControllerIntegrationTest`): fluxo CRUD completo via MockMvc, validação de campos obrigatórios e rejeição de enum inválido.
 
 ## Endpoints da API
 
@@ -76,8 +78,10 @@ GET /api/tasks?status=TODO&priority=HIGH
 
 Parâmetros opcionais:
 
-- `status`: `TODO`, `IN_PROGRESS`, `DONE`
-- `priority`: `LOW`, `MEDIUM`, `HIGH`
+| Parâmetro | Valores aceitos |
+|-----------|----------------|
+| `status` | `TODO`, `IN_PROGRESS`, `DONE` |
+| `priority` | `LOW`, `MEDIUM`, `HIGH` |
 
 ### Buscar por id
 
@@ -146,3 +150,33 @@ Resposta `204 No Content`.
 - `src/main/resources/static`: frontend estático.
 - `src/test/java/com/taskmanager`: testes unitários e de integração.
 - `TECHNICAL_NOTE.md`: decisões técnicas, 'trade-offs', melhorias futuras e análise de incidente.
+
+```
+src/
+├── main/
+│   ├── java/com/taskmanager/
+│   │   ├── config/            # Configuração de CORS
+│   │   ├── controller/        # TaskController
+│   │   ├── dto/               # TaskRequestDTO, TaskResponseDTO
+│   │   ├── exception/         # GlobalExceptionHandler, ErrorResponse
+│   │   ├── model/             # Task (entity) + enums
+│   │   ├── repository/        # TaskRepository
+│   │   ├── service/           # TaskService (regras + logs)
+│   │   └── TaskManagerApplication.java
+│   └── resources/
+│       ├── db/migration/      # V1__create_tasks_table.sql
+│       ├── static/            # Frontend estático (HTML/CSS/JS)
+│       └── application.properties
+└── test/
+    └── java/com/taskmanager/
+        ├── controller/        # TaskControllerIntegrationTest
+        └── service/           # TaskServiceTest
+```
+
+## Decisões técnicas e análise de incidente
+
+Consulte o arquivo [TECHNICAL_NOTE.md](./TECHNICAL_NOTE.md).
+
+## Para o Frontend utilizando o Angular
+
+Consulte o repositório [task-manager-front](https://github.com/lenington/task-manager-front)
