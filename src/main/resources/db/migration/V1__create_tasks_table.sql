@@ -1,0 +1,9 @@
+CREATE TABLE tasks (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description VARCHAR(500) NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'TODO',
+    priority VARCHAR(20) NOT NULL DEFAULT 'MEDIUM',
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
+);

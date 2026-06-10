@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Task Manager</title>
+	<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+	<header class="topbar">
+		<div>
+			<h1>Task Manager</h1>
+			<p>Fluxo completo de criação, edição, filtros e remoção de tarefas.</p>
+		</div>
+		<div class="summary" aria-live="polite">
+			<span><strong id="total-count">0</strong> tarefas</span>
+			<span><strong id="done-count">0</strong> concluídas</span>
+		</div>
+	</header>
+
+	<main class="layout">
+		<section class="panel form-panel" aria-labelledby="form-title">
+			<h2 id="form-title">Nova tarefa</h2>
+			<form id="task-form" novalidate>
+				<input type="hidden" id="task-id">
+
+				<label for="title">Título</label>
+				<input id="title" name="title" maxlength="100" required placeholder="Ex.: Analisar logs do incidente">
+				<span class="error" id="title-error"></span>
+
+				<label for="description">Descrição</label>
+				<textarea id="description" name="description" maxlength="500" rows="5" placeholder="Contexto, hipótese ou próximo passo"></textarea>
+				<span class="counter" id="description-counter">0/500</span>
+
+				<div class="field-row">
+					<div>
+						<label for="status">Status</label>
+						<select id="status" name="status" required>
+							<option value="TODO">A fazer</option>
+							<option value="IN_PROGRESS">Em andamento</option>
+							<option value="DONE">Concluída</option>
+						</select>
+					</div>
+					<div>
+						<label for="priority">Prioridade</label>
+						<select id="priority" name="priority" required>
+							<option value="LOW">Baixa</option>
+							<option value="MEDIUM" selected>Média</option>
+							<option value="HIGH">Alta</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="actions">
+					<button type="submit" id="submit-button">Salvar</button>
+					<button type="button" class="secondary" id="cancel-button">Cancelar</button>
+				</div>
+			</form>
+		</section>
+
+		<section class="panel list-panel" aria-labelledby="list-title">
+			<div class="list-header">
+				<h2 id="list-title">Tarefas</h2>
+				<div class="filters">
+					<select id="filter-status" aria-label="Filtrar por status">
+						<option value="">Todos os status</option>
+						<option value="TODO">A fazer</option>
+						<option value="IN_PROGRESS">Em andamento</option>
+						<option value="DONE">Concluída</option>
+					</select>
+					<select id="filter-priority" aria-label="Filtrar por prioridade">
+						<option value="">Todas as prioridades</option>
+						<option value="LOW">Baixa</option>
+						<option value="MEDIUM">Média</option>
+						<option value="HIGH">Alta</option>
+					</select>
+				</div>
+			</div>
+			<div id="message" class="message" role="status"></div>
+			<div id="task-list" class="task-list"></div>
+		</section>
+	</main>
+
+	<script src="/app.js"></script>
+</body>
+</html>
